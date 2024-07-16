@@ -1,6 +1,8 @@
 """Models for the team app."""
 
 from django.db import models
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class Member(models.Model):
     """
@@ -22,6 +24,8 @@ class Member(models.Model):
         return self.name
 
     def get_member_since_str(self):
-        # TODO: use relativedelta to compute a string like this based on the
-        # date_joined field:
-        return '1 year, 10 months, 4 days'
+        if not self.date_joined:
+            return 'Date Joined'
+        current_date = datetime.now().date()
+        member_duration = relativedelta(current_date, self.date_joined)
+        return f'{member_duration.years} years, {member_duration.months} months, {member_duration.days} days'
