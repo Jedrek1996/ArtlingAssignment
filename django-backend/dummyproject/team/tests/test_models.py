@@ -1,6 +1,6 @@
 """Tests for the models of the team app."""
 import pytest
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from dummyproject.utils import mixer
@@ -15,10 +15,13 @@ class TestMember:
         )
 
     def test_get_member_since_str(self):
+        join_date = datetime.now().date() - timedelta(days=365)
+        obj = mixer.blend('team.Member', date_joined=join_date)
+        
         current_date = datetime.now().date()
-        obj = mixer.blend('team.Member', date_joined=current_date)
-        date_joined = relativedelta(current_date, current_date)
-        expected_str = f'{date_joined.years} years, {date_joined.months} months, {date_joined.days} days'
+        member_duration = relativedelta(current_date, join_date)
+        expected_str = f'{member_duration.years} years, {member_duration.months} months, {member_duration.days} days'
+        
         assert obj.get_member_since_str() == expected_str, 'Should return correct member since string'
 
     def test_team_list_view_get(self, client):
