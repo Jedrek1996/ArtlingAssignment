@@ -1,0 +1,31 @@
+services:
+  django_backend:
+    build:
+      context: ./django-backend/dummyproject
+    working_dir: /usr/src/app/dummyproject
+    hostname: django-backend
+    container_name: dummy_django_backend
+    volumes:
+      - ./django-backend/dummyproject/:/usr/src/app
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    command: sleep infinity
+
+  remix_frontend:
+    build:
+      context: ./remix-frontend
+    working_dir: /usr/src/app/
+    hostname: remix-frontend
+    container_name: dummy_remix_frontend
+    volumes:
+      - ./remix-frontend/:/usr/src/app
+      - ./remix-frontend/node_modules:/usr/src/app/node_modules
+      - ./remix-frontend/build:/usr/src/app/build
+    ports:
+      - 5173:5173 # remix
+      - 3010:3010 # vite hmr
+    stdin_open: true
+    tty: true
+    command: sleep infinity
